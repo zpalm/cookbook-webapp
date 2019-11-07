@@ -1,9 +1,9 @@
 package com.zpalm.database;
 
+import com.zpalm.model.Recipe;
+
 import java.util.Map;
 import java.util.Optional;
-
-import com.zpalm.model.Recipe;
 
 public class InMemoryDatabase implements Database {
 
