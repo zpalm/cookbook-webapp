@@ -10,5 +10,5 @@ public interface Database {
 
     void delete(Long id);
 
-    Optional<Recipe> get(Long id);
+    Optional<Recipe> getById(Long id);
 }
