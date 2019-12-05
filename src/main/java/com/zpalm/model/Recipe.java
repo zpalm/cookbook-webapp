@@ -12,4 +12,5 @@ public class Recipe {
     private final String name;
     private final List<String> ingredients;
     private final List<String> entry;
+    
 }
