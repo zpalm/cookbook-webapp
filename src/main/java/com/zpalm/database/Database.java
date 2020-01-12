@@ -2,13 +2,20 @@ package com.zpalm.database;
 
 import com.zpalm.model.Recipe;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface Database {
 
-    Recipe add(Recipe recipe);
+    Recipe save(Recipe recipe);
 
-    void delete(Long id);
+    void delete(Long id) throws DatabaseOperationException;
 
-    Optional<Recipe> get(Long id);
+    Optional<Recipe> getById(Long id);
+
+    Collection<Recipe> getAll();
+
+    void deleteAll();
+
+    boolean exists(Long id);
 }

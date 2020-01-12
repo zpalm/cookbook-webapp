@@ -2,30 +2,88 @@ package com.zpalm.database;
 
 import com.zpalm.model.Recipe;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class InMemoryDatabase implements Database {
 
     private Map<Long, Recipe> storage;
+    private AtomicLong nextId = new AtomicLong(0);
 
     public InMemoryDatabase(Map<Long, Recipe> storage) {
         this.storage = storage;
     }
 
     @Override
-    public Recipe add(Recipe recipe) {
-        storage.put(recipe.getId(), recipe);
-        return recipe;
+    public Recipe save(Recipe recipe) {
+        if (recipe == null) {
+            throw new IllegalArgumentException("Recipe cannot be null");
+        }
+        if (recipe.getId() == null || !storage.containsKey(recipe.getId())) {
+            return addRecipe(recipe);
+        }
+        return updateRecipe(recipe);
+    }
+
+    private Recipe addRecipe(Recipe recipe) {
+        Long id = nextId.incrementAndGet();
+        Recipe savedRecipe = Recipe.builder()
+            .id(id)
+            .name(recipe.getName())
+            .ingredients(recipe.getIngredients())
+            .entry(recipe.getEntry())
+            .build();
+        storage.put(id, savedRecipe);
+        return savedRecipe;
+    }
+
+    private Recipe updateRecipe(Recipe recipe) {
+        Recipe updatedRecipe = Recipe.builder()
+            .id(recipe.getId())
+            .name(recipe.getName())
+            .ingredients(recipe.getIngredients())
+            .entry(recipe.getEntry())
+            .build();
+        storage.put(recipe.getId(), updatedRecipe);
+        return updatedRecipe;
     }
 
     @Override
-    public void delete(Long id) {
+    public Optional<Recipe> getById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
+        }
+        return Optional.ofNullable(storage.get(id));
+    }
+
+    @Override
+    public void delete(Long id) throws DatabaseOperationException {
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
+        }
+        if (!storage.containsKey(id)) {
+            throw new DatabaseOperationException("Attempt to delete non-existing recipe.");
+        }
         storage.remove(id);
     }
 
     @Override
-    public Optional<Recipe> get(Long id) {
-        return Optional.empty();
+    public Collection<Recipe> getAll() {
+        return storage.values();
+    }
+
+    @Override
+    public void deleteAll() {
+        storage.clear();
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
+        }
+        return storage.containsKey(id);
     }
 }
