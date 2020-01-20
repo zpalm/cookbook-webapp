@@ -7,6 +7,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@ConditionalOnProperty(name = "com.zpalm.database", havingValue = "in-memory")
 public class InMemoryDatabase implements Database {
 
     private Map<Long, Recipe> storage;
@@ -21,7 +26,7 @@ public class InMemoryDatabase implements Database {
         if (recipe == null) {
             throw new IllegalArgumentException("Recipe cannot be null");
         }
-        if (recipe.getId() == null || !storage.containsKey(recipe.getId())) {
+        if (recipe.getId() == null || !exists(recipe.getId())) {
             return addRecipe(recipe);
         }
         return updateRecipe(recipe);
@@ -29,6 +34,13 @@ public class InMemoryDatabase implements Database {
 
     private Recipe addRecipe(Recipe recipe) {
         Long id = nextId.incrementAndGet();
+        if (recipe.getId() == null) {
+            while (exists(id)) {
+                id = nextId.incrementAndGet();
+            }
+        } else {
+            id = recipe.getId();
+        }
         Recipe savedRecipe = Recipe.builder()
             .id(id)
             .name(recipe.getName())

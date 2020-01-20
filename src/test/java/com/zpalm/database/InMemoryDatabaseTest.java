@@ -22,12 +22,27 @@ class InMemoryDatabaseTest {
     InMemoryDatabase inMemoryDatabase = new InMemoryDatabase(storage);
 
     @Test
-    void shouldAddRecipeToDatabase() {
+    void shouldAddRecipeWithNullIdToDatabase() {
+        Recipe recipeInDatabase = RecipeGenerator.getRandomRecipeWithGivenId(1L);
         Recipe recipeToAdd = RecipeGenerator.getRandomRecipeWithNullId();
+        storage.put(recipeInDatabase.getId(), recipeInDatabase);
+
         Recipe addedRecipe = inMemoryDatabase.save(recipeToAdd);
 
-        assertEquals(1L, addedRecipe.getId());
-        assertEquals(storage.get(1L), addedRecipe);
+        assertEquals((recipeInDatabase.getId() + 1L), addedRecipe.getId());
+        assertEquals(storage.get((recipeInDatabase.getId() + 1L)), addedRecipe);
+    }
+
+    @Test
+    void shouldAddRecipeWithGivenIdToDatabase() {
+        Recipe recipeInDatabase = RecipeGenerator.getRandomRecipeWithGivenId(1L);
+        Recipe recipeToAdd = RecipeGenerator.getRandomRecipeWithGivenId(3L);
+        storage.put(recipeInDatabase.getId(), recipeInDatabase);
+
+        Recipe addedRecipe = inMemoryDatabase.save(recipeToAdd);
+
+        assertEquals(recipeToAdd.getId(), addedRecipe.getId());
+        assertEquals(storage.get(recipeToAdd.getId()), addedRecipe);
     }
 
     @Test
