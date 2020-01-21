@@ -22,12 +22,27 @@ class InMemoryDatabaseTest {
     InMemoryDatabase inMemoryDatabase = new InMemoryDatabase(storage);
 
     @Test
-    void shouldAddRecipeToDatabase() {
+    void shouldAddRecipeWithNullIdToDatabase() {
+        Recipe recipeInDatabase = RecipeGenerator.getRandomRecipeWithGivenId(1L);
         Recipe recipeToAdd = RecipeGenerator.getRandomRecipeWithNullId();
+        storage.put(recipeInDatabase.getId(), recipeInDatabase);
+
         Recipe addedRecipe = inMemoryDatabase.save(recipeToAdd);
 
-        assertEquals(1L, addedRecipe.getId());
-        assertEquals(storage.get(1L), addedRecipe);
+        assertEquals((recipeInDatabase.getId() + 1L), addedRecipe.getId());
+        assertEquals(storage.get((recipeInDatabase.getId() + 1L)), addedRecipe);
+    }
+
+    @Test
+    void shouldAddRecipeWithGivenIdToDatabase() {
+        Recipe recipeInDatabase = RecipeGenerator.getRandomRecipeWithGivenId(1L);
+        Recipe recipeToAdd = RecipeGenerator.getRandomRecipeWithGivenId(3L);
+        storage.put(recipeInDatabase.getId(), recipeInDatabase);
+
+        Recipe addedRecipe = inMemoryDatabase.save(recipeToAdd);
+
+        assertEquals(recipeToAdd.getId(), addedRecipe.getId());
+        assertEquals(storage.get(recipeToAdd.getId()), addedRecipe);
     }
 
     @Test
@@ -67,9 +82,9 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void shouldGetRecipeById() throws DatabaseOperationException {
-        Recipe recipeInDatabase = RecipeGenerator.getRandomRecipe();
-        Recipe recipeToGet = RecipeGenerator.getRandomRecipe();
+    void shouldGetRecipeById() {
+        Recipe recipeInDatabase = RecipeGenerator.getRandomRecipeWithGivenId(1L);
+        Recipe recipeToGet = RecipeGenerator.getRandomRecipeWithGivenId(2L);
         storage.put(recipeInDatabase.getId(), recipeInDatabase);
         storage.put(recipeToGet.getId(), recipeToGet);
 
@@ -80,9 +95,9 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void getByIdMethodShouldGetEmptyOptionalForNonExistingRecipe() throws DatabaseOperationException {
-        Recipe recipeInDatabase = RecipeGenerator.getRandomRecipe();
-        Recipe recipeToGet = RecipeGenerator.getRandomRecipe();
+    void getByIdMethodShouldGetEmptyOptionalForNonExistingRecipe() {
+        Recipe recipeInDatabase = RecipeGenerator.getRandomRecipeWithGivenId(1L);
+        Recipe recipeToGet = RecipeGenerator.getRandomRecipeWithGivenId(2L);
         storage.put(recipeInDatabase.getId(), recipeInDatabase);
 
         Optional<Recipe> receivedRecipe = inMemoryDatabase.getById(recipeToGet.getId());
@@ -97,8 +112,8 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldGetAllRecipes() {
-        Recipe recipe1 = RecipeGenerator.getRandomRecipe();
-        Recipe recipe2 = RecipeGenerator.getRandomRecipe();
+        Recipe recipe1 = RecipeGenerator.getRandomRecipeWithGivenId(1L);
+        Recipe recipe2 = RecipeGenerator.getRandomRecipeWithGivenId(2L);
         storage.put(recipe1.getId(), recipe1);
         storage.put(recipe2.getId(), recipe2);
         Collection<Recipe> expected = storage.values();
@@ -110,8 +125,8 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldDeleteAllRecipes() {
-        Recipe recipe1 = RecipeGenerator.getRandomRecipe();
-        Recipe recipe2 = RecipeGenerator.getRandomRecipe();
+        Recipe recipe1 = RecipeGenerator.getRandomRecipeWithGivenId(1L);
+        Recipe recipe2 = RecipeGenerator.getRandomRecipeWithGivenId(2L);
         storage.put(recipe1.getId(), recipe1);
         storage.put(recipe2.getId(), recipe2);
 
