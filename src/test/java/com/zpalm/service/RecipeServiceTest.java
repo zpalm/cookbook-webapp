@@ -167,8 +167,8 @@ class RecipeServiceTest {
 
     @Test
     void shouldGetAllRecipes() {
-        Recipe recipe1 = RecipeGenerator.getRandomRecipe();
-        Recipe recipe2 = RecipeGenerator.getRandomRecipe();
+        Recipe recipe1 = RecipeGenerator.getRandomRecipeWithGivenId(1L);
+        Recipe recipe2 = RecipeGenerator.getRandomRecipeWithGivenId(2L);
         Collection<Recipe> expected = Arrays.asList(recipe1, recipe2);
         doReturn(expected).when(database).getAll();
 
@@ -198,11 +198,11 @@ class RecipeServiceTest {
 
     @Test
     void shouldReturnFalseForNonExistingRecipe() {
-        Recipe recipeNotInDatabase = RecipeGenerator.getRandomRecipe();
-        doReturn(false).when(database).exists(recipeNotInDatabase.getId());
+        Recipe nonExistingRecipe = RecipeGenerator.getRandomRecipe();
+        doReturn(false).when(database).exists(nonExistingRecipe.getId());
 
-        assertFalse(service.recipeExists(recipeNotInDatabase.getId()));
-        verify(database).exists(recipeNotInDatabase.getId());
+        assertFalse(service.recipeExists(nonExistingRecipe.getId()));
+        verify(database).exists(nonExistingRecipe.getId());
     }
 
     @Test

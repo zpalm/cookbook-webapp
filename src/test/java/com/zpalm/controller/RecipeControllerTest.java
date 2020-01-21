@@ -240,8 +240,8 @@ class RecipeControllerTest {
 
     @Test
     void shouldGetAllRecipes() throws Exception {
-        Recipe recipe1 = RecipeGenerator.getRandomRecipe();
-        Recipe recipe2 = RecipeGenerator.getRandomRecipe();
+        Recipe recipe1 = RecipeGenerator.getRandomRecipeWithGivenId(1L);
+        Recipe recipe2 = RecipeGenerator.getRandomRecipeWithGivenId(2L);
         Collection<Recipe> recipes = Arrays.asList(recipe1, recipe2);
         doReturn(recipes).when(service).getAllRecipes();
 
