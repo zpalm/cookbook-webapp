@@ -13,7 +13,6 @@ import com.zpalm.database.sqlmodel.SqlModelMapperImpl;
 import com.zpalm.generators.RecipeGenerator;
 import com.zpalm.generators.SqlRecipeGenerator;
 import com.zpalm.model.Recipe;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

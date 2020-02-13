@@ -10,7 +10,6 @@ import lombok.Data;
 @JsonDeserialize(builder = IngredientType.IngredientTypeBuilder.class)
 public class IngredientType {
 
-    //private Long id;
     private String type;
 
     @JsonPOJOBuilder(withPrefix = "")

@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Repository;
 
 @Repository

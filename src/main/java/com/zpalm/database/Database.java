@@ -1,7 +1,6 @@
 package com.zpalm.database;
 
 import com.zpalm.model.Recipe;
-
 import java.util.Collection;
 import java.util.Optional;
 

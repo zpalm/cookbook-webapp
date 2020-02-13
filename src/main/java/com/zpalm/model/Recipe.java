@@ -2,9 +2,9 @@ package com.zpalm.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
-import java.util.List;
 
 @Data
 @Builder(builderClassName = "RecipeBuilder", toBuilder = true)

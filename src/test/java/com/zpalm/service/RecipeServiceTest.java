@@ -15,7 +15,6 @@ import com.zpalm.database.Database;
 import com.zpalm.database.DatabaseOperationException;
 import com.zpalm.generators.RecipeGenerator;
 import com.zpalm.model.Recipe;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
