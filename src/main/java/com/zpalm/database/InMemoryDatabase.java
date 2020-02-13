@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
@@ -45,7 +46,7 @@ public class InMemoryDatabase implements Database {
             .id(id)
             .name(recipe.getName())
             .ingredients(recipe.getIngredients())
-            .entry(recipe.getEntry())
+            .steps(recipe.getSteps())
             .build();
         storage.put(id, savedRecipe);
         return savedRecipe;
@@ -56,7 +57,7 @@ public class InMemoryDatabase implements Database {
             .id(recipe.getId())
             .name(recipe.getName())
             .ingredients(recipe.getIngredients())
-            .entry(recipe.getEntry())
+            .steps(recipe.getSteps())
             .build();
         storage.put(recipe.getId(), updatedRecipe);
         return updatedRecipe;

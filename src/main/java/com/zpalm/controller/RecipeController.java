@@ -1,5 +1,6 @@
 package com.zpalm.controller;
 
+import com.zpalm.database.DatabaseOperationException;
 import com.zpalm.model.Recipe;
 import com.zpalm.service.RecipeService;
 import com.zpalm.service.ServiceOperationException;
@@ -32,7 +33,7 @@ public class RecipeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody Recipe recipe) throws ServiceOperationException {
+    public ResponseEntity<?> add(@RequestBody Recipe recipe) throws ServiceOperationException, DatabaseOperationException {
         if (recipe == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -46,7 +47,7 @@ public class RecipeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Recipe recipe) throws ServiceOperationException {
+    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Recipe recipe) throws ServiceOperationException, DatabaseOperationException {
         if (recipe == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
