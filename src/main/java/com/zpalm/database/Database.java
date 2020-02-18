@@ -12,6 +12,10 @@ public interface Database {
 
     Optional<Recipe> getById(Long id);
 
+    Collection<Recipe> getByName(String name);
+
+    Collection<Recipe> getByIngredientType(String type);
+
     Collection<Recipe> getAll();
 
     void deleteAll();

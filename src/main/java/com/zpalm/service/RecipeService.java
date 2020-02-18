@@ -55,6 +55,20 @@ public class RecipeService {
         return database.getById(id);
     }
 
+    public Collection<Recipe> getRecipesByName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Name is null");
+        }
+        return database.getByName(name);
+    }
+
+    public Collection<Recipe> getRecipesByIngredientType(String type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Ingredient type is null");
+        }
+        return database.getByIngredientType(type);
+    }
+
     public Collection<Recipe> getAllRecipes() {
         return database.getAll();
     }

@@ -50,6 +50,21 @@ public class HibernateDatabase implements Database {
     }
 
     @Override
+    public Collection<Recipe> getByName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Recipe name cannot be null");
+        }
+        return sqlModelMapper.mapToRecipes(recipeRepository.findByNameContainingIgnoreCase(name));
+    }
+
+    public Collection<Recipe> getByIngredientType(String type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Type of ingredient cannot be null");
+        }
+        return sqlModelMapper.mapToRecipes(recipeRepository.findByIngredientsIngredientTypeTypeIgnoreCase(type));
+    }
+
+    @Override
     public Collection<Recipe> getAll() {
         return sqlModelMapper.mapToRecipes(recipeRepository.findAll());
     }

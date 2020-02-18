@@ -21,6 +21,7 @@ import com.zpalm.service.RecipeService;
 import com.zpalm.service.ServiceOperationException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -238,17 +239,66 @@ class RecipeControllerTest {
     }
 
     @Test
+    void shouldGetRecipesByName() throws Exception {
+        Recipe recipe = RecipeGenerator.getRandomRecipe();
+        Collection<Recipe> receivedRecipes = Collections.singleton(recipe);
+        doReturn(receivedRecipes).when(service).getRecipesByName(recipe.getName());
+
+        mockMvc.perform(get(String.format("/recipes/byName?name=%s", recipe.getName()))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().json(objectMapper.writeValueAsString(receivedRecipes)));
+
+        verify(service).getRecipesByName(recipe.getName());
+    }
+
+    @Test
+    void getRecipeByNameShouldReturnBadRequestStatusForNullName() throws Exception {
+        mockMvc.perform(get("/recipes/byName")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest());
+
+        verify(service, never()).getRecipesByName(any());
+    }
+
+    @Test
+    void shouldGetRecipesByIngredientType() throws Exception {
+        Recipe recipe = RecipeGenerator.getRandomRecipe();
+        String ingredientType = recipe.getIngredients().get(1).getIngredientType().getType();
+        Collection<Recipe> receivedRecipes = Collections.singleton(recipe);
+        doReturn(receivedRecipes).when(service).getRecipesByIngredientType(ingredientType);
+
+        mockMvc.perform(get(String.format("/recipes/byIngredientType?type=%s", ingredientType))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().json(objectMapper.writeValueAsString(receivedRecipes)));
+
+        verify(service).getRecipesByIngredientType(ingredientType);
+    }
+
+    @Test
+    void getRecipeByIngredientTypeShouldReturnBadRequestStatusForNullType() throws Exception {
+        mockMvc.perform(get("/recipes/byIngredientType")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest());
+
+        verify(service, never()).getRecipesByIngredientType(any());
+    }
+
+    @Test
     void shouldGetAllRecipes() throws Exception {
         Recipe recipe1 = RecipeGenerator.getRandomRecipeWithGivenId(1L);
         Recipe recipe2 = RecipeGenerator.getRandomRecipeWithGivenId(2L);
-        Collection<Recipe> recipes = Arrays.asList(recipe1, recipe2);
-        doReturn(recipes).when(service).getAllRecipes();
+        Collection<Recipe> receivedRecipes = Arrays.asList(recipe1, recipe2);
+        doReturn(receivedRecipes).when(service).getAllRecipes();
 
         mockMvc.perform(get("/recipes")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().json(objectMapper.writeValueAsString(recipes)));
+            .andExpect(content().json(objectMapper.writeValueAsString(receivedRecipes)));
 
         verify(service).getAllRecipes();
     }

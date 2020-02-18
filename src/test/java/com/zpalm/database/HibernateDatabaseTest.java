@@ -2,6 +2,7 @@ package com.zpalm.database;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
@@ -42,9 +43,9 @@ public class HibernateDatabaseTest {
         com.zpalm.database.sqlmodel.Recipe sqlRecipe = sqlModelMapper.toSqlRecipe(recipeToSave);
         doReturn(sqlRecipe).when(recipeRepository).save(sqlRecipe);
 
-        Recipe result = hibernateDatabase.save(recipeToSave);
+        Recipe savedRecipe = hibernateDatabase.save(recipeToSave);
 
-        assertEquals(recipeToSave, result);
+        assertEquals(recipeToSave, savedRecipe);
         verify(recipeRepository).save(sqlRecipe);
     }
 
@@ -108,16 +109,55 @@ public class HibernateDatabaseTest {
     }
 
     @Test
+    void shouldGetRecipesByName() {
+        Recipe recipeToGet = RecipeGenerator.getRandomRecipe();
+        com.zpalm.database.sqlmodel.Recipe sqlRecipe = sqlModelMapper.toSqlRecipe(recipeToGet);
+        List<com.zpalm.database.sqlmodel.Recipe> sqlRecipes = List.of(sqlRecipe);
+        List<Recipe> expected = sqlModelMapper.mapToRecipes(sqlRecipes);
+        doReturn(sqlRecipes).when(recipeRepository).findByNameContainingIgnoreCase(recipeToGet.getName());
+
+        Collection<Recipe> receivedRecipes = hibernateDatabase.getByName(recipeToGet.getName());
+
+        assertIterableEquals(expected, receivedRecipes);
+        verify(recipeRepository).findByNameContainingIgnoreCase(recipeToGet.getName());
+    }
+
+    @Test
+    void getByNameMethodShouldThrowAnExceptionForNullName() {
+        assertThrows(IllegalArgumentException.class, () -> hibernateDatabase.getByName(null));
+    }
+
+    @Test
+    void shouldGetRecipesByIngredientType() {
+        Recipe recipeToGet = RecipeGenerator.getRandomRecipe();
+        com.zpalm.database.sqlmodel.Recipe sqlRecipe = sqlModelMapper.toSqlRecipe(recipeToGet);
+        String ingredientType = recipeToGet.getIngredients().get(1).getIngredientType().getType();
+        List<com.zpalm.database.sqlmodel.Recipe> sqlRecipes = List.of(sqlRecipe);
+        List<Recipe> expected = sqlModelMapper.mapToRecipes(sqlRecipes);
+        doReturn(sqlRecipes).when(recipeRepository).findByIngredientsIngredientTypeTypeIgnoreCase(ingredientType);
+
+        Collection<Recipe> receivedRecipes = hibernateDatabase.getByIngredientType(ingredientType);
+
+        assertIterableEquals(expected, receivedRecipes);
+        verify(recipeRepository).findByIngredientsIngredientTypeTypeIgnoreCase(ingredientType);
+    }
+
+    @Test
+    void getByIngredientTypeMethodShouldThrowAnExceptionForNullType() {
+        assertThrows(IllegalArgumentException.class, () -> hibernateDatabase.getByIngredientType(null));
+    }
+
+    @Test
     void shouldGetAllRecipes() {
         com.zpalm.database.sqlmodel.Recipe recipe1 = SqlRecipeGenerator.getRandomRecipe();
         com.zpalm.database.sqlmodel.Recipe recipe2 = SqlRecipeGenerator.getRandomRecipe();
         List<com.zpalm.database.sqlmodel.Recipe> sqlRecipes = Arrays.asList(recipe1, recipe2);
-        List<Recipe> recipes = sqlModelMapper.mapToRecipes(sqlRecipes);
+        List<Recipe> expected = sqlModelMapper.mapToRecipes(sqlRecipes);
         doReturn(sqlRecipes).when(recipeRepository).findAll();
 
-        Collection<Recipe> result = hibernateDatabase.getAll();
+        Collection<Recipe> receivedRecipes = hibernateDatabase.getAll();
 
-        assertEquals(recipes, result);
+        assertEquals(expected, receivedRecipes);
         verify(recipeRepository).findAll();
     }
 

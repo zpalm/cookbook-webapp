@@ -73,12 +73,31 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getById(@PathVariable("id") Long id) {
+        if (id == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         Optional<Recipe> recipe = recipeService.getRecipeById(id);
-        if (!recipe.isPresent()) {
+        if (recipe.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return new ResponseEntity<>(recipe.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("/byName")
+    public ResponseEntity<?> getByName(String name) {
+        if (name == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return new ResponseEntity<>(recipeService.getRecipesByName(name), HttpStatus.OK);
+    }
+
+    @GetMapping("/byIngredientType")
+    public ResponseEntity<?> getByIngredientType(String type) {
+        if (type == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return new ResponseEntity<>(recipeService.getRecipesByIngredientType(type), HttpStatus.OK);
     }
 
     @GetMapping
