@@ -2,6 +2,7 @@ package com.zpalm.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -15,9 +16,9 @@ import com.zpalm.database.Database;
 import com.zpalm.database.DatabaseOperationException;
 import com.zpalm.generators.RecipeGenerator;
 import com.zpalm.model.Recipe;
-
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -163,6 +164,41 @@ class RecipeServiceTest {
     @Test
     void getByIdMethodShouldThrowAnExceptionForNullId() {
         assertThrows(IllegalArgumentException.class, () -> service.getRecipeById(null));
+    }
+
+    @Test
+    void shouldGetRecipesByName() {
+        Recipe recipeToGet = RecipeGenerator.getRandomRecipe();
+        Collection<Recipe> expected = Collections.singleton(recipeToGet);
+        doReturn(expected).when(database).getByName(recipeToGet.getName());
+
+        Collection<Recipe> receivedRecipes = service.getRecipesByName(recipeToGet.getName());
+
+        assertIterableEquals(expected, receivedRecipes);
+        verify(database).getByName(recipeToGet.getName());
+    }
+
+    @Test
+    void getByNameMethodShouldThrowAnExceptionForNullId() {
+        assertThrows(IllegalArgumentException.class, () -> service.getRecipesByName(null));
+    }
+
+    @Test
+    void shouldGetRecipesByIngredientType() {
+        Recipe recipeToGet = RecipeGenerator.getRandomRecipe();
+        String ingredientType = recipeToGet.getIngredients().get(1).getIngredientType().getType();
+        Collection<Recipe> expected = Collections.singleton(recipeToGet);
+        doReturn(expected).when(database).getByIngredientType(ingredientType);
+
+        Collection<Recipe> receivedRecipes = service.getRecipesByIngredientType(ingredientType);
+
+        assertIterableEquals(expected, receivedRecipes);
+        verify(database).getByIngredientType(ingredientType);
+    }
+
+    @Test
+    void getByIngredientTypeMethodShouldThrowAnExceptionForNullId() {
+        assertThrows(IllegalArgumentException.class, () -> service.getRecipesByIngredientType(null));
     }
 
     @Test

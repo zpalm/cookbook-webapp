@@ -2,15 +2,18 @@ package com.zpalm.database;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.zpalm.generators.IngredientGenerator;
 import com.zpalm.generators.RecipeGenerator;
+import com.zpalm.generators.RecipeStepGenerator;
 import com.zpalm.model.Recipe;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -95,7 +98,7 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void getByIdMethodShouldGetEmptyOptionalForNonExistingRecipe() {
+    void getByIdMethodShouldReturnEmptyOptionalForNonExistingRecipe() {
         Recipe recipeInDatabase = RecipeGenerator.getRandomRecipeWithGivenId(1L);
         Recipe recipeToGet = RecipeGenerator.getRandomRecipeWithGivenId(2L);
         storage.put(recipeInDatabase.getId(), recipeInDatabase);
@@ -111,6 +114,62 @@ class InMemoryDatabaseTest {
     }
 
     @Test
+    void shouldGetRecipeByName() {
+        Recipe recipe1 = Recipe.builder()
+            .id(1L)
+            .name("Omelette")
+            .steps(List.of(RecipeStepGenerator.getRandomRecipeStep(), RecipeStepGenerator.getRandomRecipeStep()))
+            .ingredients(List.of(IngredientGenerator.getRandomIngredient(), IngredientGenerator.getRandomIngredient()))
+            .build();
+        Recipe recipe2 = Recipe.builder()
+            .id(2L)
+            .name("Tomato soup")
+            .steps(List.of(RecipeStepGenerator.getRandomRecipeStep(), RecipeStepGenerator.getRandomRecipeStep()))
+            .ingredients(List.of(IngredientGenerator.getRandomIngredient(), IngredientGenerator.getRandomIngredient()))
+            .build();
+        storage.put(recipe1.getId(), recipe1);
+        storage.put(recipe2.getId(), recipe2);
+        Collection<Recipe> expected = Collections.singleton(recipe1);
+
+        Collection<Recipe> receivedRecipes = inMemoryDatabase.getByName("omelette");
+
+        assertIterableEquals(expected, receivedRecipes);
+    }
+
+    @Test
+    void getByNameMethodShouldThrowAnExceptionForNullName() {
+        assertThrows(IllegalArgumentException.class, () -> inMemoryDatabase.getByName(null));
+    }
+
+    @Test
+    void shouldGetRecipesByIngredientType() {
+        Recipe recipe1 = Recipe.builder()
+            .id(1L)
+            .name("Omelette")
+            .steps(List.of(RecipeStepGenerator.getRandomRecipeStep(), RecipeStepGenerator.getRandomRecipeStep()))
+            .ingredients(List.of(IngredientGenerator.getRandomIngredientWithSpecificType("eggs"), IngredientGenerator.getRandomIngredientWithSpecificType("milk")))
+            .build();
+        Recipe recipe2 = Recipe.builder()
+            .id(2L)
+            .name("Toasts")
+            .steps(List.of(RecipeStepGenerator.getRandomRecipeStep(), RecipeStepGenerator.getRandomRecipeStep()))
+            .ingredients(List.of(IngredientGenerator.getRandomIngredientWithSpecificType("bread"), IngredientGenerator.getRandomIngredientWithSpecificType("ham")))
+            .build();
+        storage.put(recipe1.getId(), recipe1);
+        storage.put(recipe2.getId(), recipe2);
+        Collection<Recipe> expected = Collections.singleton(recipe2);
+
+        Collection<Recipe> receivedRecipes = inMemoryDatabase.getByIngredientType("ham");
+
+        assertIterableEquals(expected, receivedRecipes);
+    }
+
+    @Test
+    void getByIngredientTypeMethodShouldThrowAnExceptionForNullType() {
+        assertThrows(IllegalArgumentException.class, () -> inMemoryDatabase.getByIngredientType(null));
+    }
+
+    @Test
     void shouldGetAllRecipes() {
         Recipe recipe1 = RecipeGenerator.getRandomRecipeWithGivenId(1L);
         Recipe recipe2 = RecipeGenerator.getRandomRecipeWithGivenId(2L);
@@ -118,9 +177,9 @@ class InMemoryDatabaseTest {
         storage.put(recipe2.getId(), recipe2);
         Collection<Recipe> expected = storage.values();
 
-        Collection<Recipe> returnedRecipes = inMemoryDatabase.getAll();
+        Collection<Recipe> receivedRecipes = inMemoryDatabase.getAll();
 
-        assertEquals(expected, returnedRecipes);
+        assertIterableEquals(expected, receivedRecipes);
     }
 
     @Test
@@ -132,7 +191,7 @@ class InMemoryDatabaseTest {
 
         inMemoryDatabase.deleteAll();
 
-        assertEquals(new HashMap<>(), storage);
+        assertEquals(new HashMap<Long, Recipe>(), storage);
     }
 
     @Test

@@ -1,9 +1,9 @@
 package com.zpalm.controller;
 
+import com.zpalm.database.DatabaseOperationException;
 import com.zpalm.model.Recipe;
 import com.zpalm.service.RecipeService;
 import com.zpalm.service.ServiceOperationException;
-
 import java.net.URI;
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ public class RecipeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> add(@RequestBody Recipe recipe) throws ServiceOperationException {
+    public ResponseEntity<?> add(@RequestBody Recipe recipe) throws ServiceOperationException, DatabaseOperationException {
         if (recipe == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -46,7 +46,7 @@ public class RecipeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Recipe recipe) throws ServiceOperationException {
+    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Recipe recipe) throws ServiceOperationException, DatabaseOperationException {
         if (recipe == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -73,12 +73,31 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getById(@PathVariable("id") Long id) {
+        if (id == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         Optional<Recipe> recipe = recipeService.getRecipeById(id);
-        if (!recipe.isPresent()) {
+        if (recipe.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return new ResponseEntity<>(recipe.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("/byName")
+    public ResponseEntity<?> getByName(String name) {
+        if (name == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return new ResponseEntity<>(recipeService.getRecipesByName(name), HttpStatus.OK);
+    }
+
+    @GetMapping("/byIngredientType")
+    public ResponseEntity<?> getByIngredientType(String type) {
+        if (type == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return new ResponseEntity<>(recipeService.getRecipesByIngredientType(type), HttpStatus.OK);
     }
 
     @GetMapping

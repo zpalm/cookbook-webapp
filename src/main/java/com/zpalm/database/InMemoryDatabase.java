@@ -1,11 +1,11 @@
 package com.zpalm.database;
 
 import com.zpalm.model.Recipe;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
@@ -45,7 +45,7 @@ public class InMemoryDatabase implements Database {
             .id(id)
             .name(recipe.getName())
             .ingredients(recipe.getIngredients())
-            .entry(recipe.getEntry())
+            .steps(recipe.getSteps())
             .build();
         storage.put(id, savedRecipe);
         return savedRecipe;
@@ -56,7 +56,7 @@ public class InMemoryDatabase implements Database {
             .id(recipe.getId())
             .name(recipe.getName())
             .ingredients(recipe.getIngredients())
-            .entry(recipe.getEntry())
+            .steps(recipe.getSteps())
             .build();
         storage.put(recipe.getId(), updatedRecipe);
         return updatedRecipe;
@@ -68,6 +68,30 @@ public class InMemoryDatabase implements Database {
             throw new IllegalArgumentException("ID cannot be null");
         }
         return Optional.ofNullable(storage.get(id));
+    }
+
+    @Override
+    public Collection<Recipe> getByName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Recipe name cannot be null");
+        }
+        return storage.values()
+            .stream()
+            .filter(recipe -> recipe.getName().toLowerCase().contains(name.toLowerCase()))
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<Recipe> getByIngredientType(String type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Type of ingredient cannot be null");
+        }
+        return storage.values()
+            .stream()
+            .filter(recipe -> recipe.getIngredients()
+                .stream()
+                .anyMatch(i -> i.getIngredientType().getType().toLowerCase().contains(type.toLowerCase())))
+            .collect(Collectors.toList());
     }
 
     @Override

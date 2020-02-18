@@ -1,15 +1,15 @@
 package com.zpalm.generators;
 
-import com.zpalm.model.Ingredient;
-import com.zpalm.model.Recipe;
-import com.zpalm.model.RecipeStep;
+import com.zpalm.database.sqlmodel.Ingredient;
+import com.zpalm.database.sqlmodel.Recipe;
+import com.zpalm.database.sqlmodel.RecipeStep;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-public class RecipeGenerator {
+public class SqlRecipeGenerator {
     private static AtomicLong nextId = new AtomicLong(0);
 
     public static Recipe getRandomRecipe() {
@@ -18,8 +18,8 @@ public class RecipeGenerator {
         List<Ingredient> ingredients = new ArrayList<>();
         List<RecipeStep> steps = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            ingredients.add(IngredientGenerator.getRandomIngredient());
-            steps.add(RecipeStepGenerator.getRandomRecipeStep());
+            ingredients.add(SqlIngredientGenerator.getRandomIngredient());
+            steps.add(SqlRecipeStepGenerator.getRandomRecipeStep());
         }
 
         return Recipe.builder()
@@ -36,8 +36,8 @@ public class RecipeGenerator {
         List<Ingredient> ingredients = new ArrayList<>();
         List<RecipeStep> steps = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            ingredients.add(IngredientGenerator.getRandomIngredient());
-            steps.add(RecipeStepGenerator.getRandomRecipeStep());
+            ingredients.add(SqlIngredientGenerator.getRandomIngredient());
+            steps.add(SqlRecipeStepGenerator.getRandomRecipeStep());
         }
 
         return Recipe.builder()
@@ -53,8 +53,8 @@ public class RecipeGenerator {
         List<Ingredient> ingredients = new ArrayList<>();
         List<RecipeStep> steps = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            ingredients.add(IngredientGenerator.getRandomIngredient());
-            steps.add(RecipeStepGenerator.getRandomRecipeStep());
+            ingredients.add(SqlIngredientGenerator.getRandomIngredient());
+            steps.add(SqlRecipeStepGenerator.getRandomRecipeStep());
         }
 
         return Recipe.builder()
