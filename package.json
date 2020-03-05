@@ -1,10 +1,10 @@
 {
-  "name": "spring-data-rest-and-reactjs",
-  "version": "0.1.0",
-  "description": "Demo of ReactJS + Spring Data REST",
+  "name": "project",
+  "version": "1.0.0",
+  "description": "Demo project",
   "repository": {
     "type": "git",
-    "url": "git@github.com:spring-guides/tut-react-and-spring-data-rest.git"
+    "url": "git@github.com:zpalm/cookbook-webapp.git"
   },
   "keywords": [
     "rest",
@@ -13,12 +13,12 @@
     "data",
     "react"
   ],
-  "author": "Greg L. Turnquist",
+  "author": "Zuzanna Palmowska",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/spring-guides/tut-react-and-spring-data-rest/issues"
+    "url": "https://github.com/zpalm/cookbook-webapp"
   },
-  "homepage": "https://github.com/spring-guides/tut-react-and-spring-data-rest",
+  "homepage": "https://github.com/zpalm/cookbook-webapp",
   "dependencies": {
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
