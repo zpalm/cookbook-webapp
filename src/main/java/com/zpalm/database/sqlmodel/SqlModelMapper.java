@@ -34,13 +34,6 @@ public interface SqlModelMapper {
     com.zpalm.model.Ingredient toIngredient(Ingredient ingredient);
 
     @Mapping(target = "id", source = "")
-    @Mapping(target = "type", source = "ingredientType.type")
-    IngredientType toSqlIngredientType(com.zpalm.model.IngredientType ingredientType);
-
-    @Mapping(target = "type", source = "ingredientType.type")
-    com.zpalm.model.IngredientType toIngredientType(IngredientType ingredientType);
-
-    @Mapping(target = "id", source = "")
     @Mapping(target = "step", source = "recipeStep.step")
     RecipeStep toSqlRecipeStep(com.zpalm.model.RecipeStep recipeStep);
 

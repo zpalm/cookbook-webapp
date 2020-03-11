@@ -9,7 +9,6 @@ import com.zpalm.generators.SqlIngredientGenerator;
 import com.zpalm.generators.SqlRecipeGenerator;
 import com.zpalm.generators.SqlRecipeStepGenerator;
 import com.zpalm.model.Ingredient;
-import com.zpalm.model.IngredientType;
 import com.zpalm.model.Recipe;
 import com.zpalm.model.RecipeStep;
 
@@ -55,24 +54,6 @@ public class SqlModelMapperTest {
         Ingredient ingredient = sqlModelMapper.toIngredient(sqlIngredient);
 
         assertEquals(sqlIngredient.getQuantity(), ingredient.getQuantity());
-    }
-
-    @Test
-    void shouldMapIngredientTypeToSqlIngredientType() {
-        IngredientType ingredientType = IngredientGenerator.getRandomIngredient().getIngredientType();
-
-        com.zpalm.database.sqlmodel.IngredientType sqlIngredientType = sqlModelMapper.toSqlIngredientType(ingredientType);
-
-        assertEquals(ingredientType.getType(), sqlIngredientType.getType());
-    }
-
-    @Test
-    void shouldMapSqlIngredientTypeToIngredientType() {
-        com.zpalm.database.sqlmodel.IngredientType sqlIngredientType = SqlIngredientGenerator.getRandomIngredient().getIngredientType();
-
-        IngredientType ingredientType = sqlModelMapper.toIngredientType(sqlIngredientType);
-
-        assertEquals(sqlIngredientType.getType(), ingredientType.getType());
     }
 
     @Test

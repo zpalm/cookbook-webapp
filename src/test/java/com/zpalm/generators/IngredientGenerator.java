@@ -1,7 +1,6 @@
 package com.zpalm.generators;
 
 import com.zpalm.model.Ingredient;
-import com.zpalm.model.IngredientType;
 import com.zpalm.model.Unit;
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -16,9 +15,7 @@ public class IngredientGenerator {
     private static Random random = new Random();
 
     public static Ingredient getRandomIngredient() {
-        IngredientType ingredientType = IngredientType.builder()
-            .type(RandomStringUtils.randomAlphabetic(5, 10))
-            .build();
+        String ingredientType = RandomStringUtils.randomAlphabetic(5, 10);
         List<Unit> units = Arrays.asList(Unit.values());
         BigDecimal quantity = BigDecimal.valueOf(ThreadLocalRandom.current().nextInt(1, 50));
 
@@ -30,14 +27,11 @@ public class IngredientGenerator {
     }
 
     public static Ingredient getRandomIngredientWithSpecificType(String type) {
-        IngredientType ingredientType = IngredientType.builder()
-            .type(type)
-            .build();
         List<Unit> units = Arrays.asList(Unit.values());
         BigDecimal quantity = BigDecimal.valueOf(ThreadLocalRandom.current().nextInt(1, 50));
 
         return Ingredient.builder()
-            .ingredientType(ingredientType)
+            .ingredientType(type)
             .unit(units.get(random.nextInt(units.size())))
             .quantity(quantity)
             .build();

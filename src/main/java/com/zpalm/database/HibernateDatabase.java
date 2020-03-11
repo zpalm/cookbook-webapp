@@ -61,7 +61,7 @@ public class HibernateDatabase implements Database {
         if (type == null) {
             throw new IllegalArgumentException("Type of ingredient cannot be null");
         }
-        return sqlModelMapper.mapToRecipes(recipeRepository.findByIngredientsIngredientTypeTypeIgnoreCase(type));
+        return sqlModelMapper.mapToRecipes(recipeRepository.findByIngredientsIngredientTypeIgnoreCase(type));
     }
 
     @Override

@@ -186,7 +186,7 @@ class RecipeServiceTest {
     @Test
     void shouldGetRecipesByIngredientType() {
         Recipe recipeToGet = RecipeGenerator.getRandomRecipe();
-        String ingredientType = recipeToGet.getIngredients().get(1).getIngredientType().getType();
+        String ingredientType = recipeToGet.getIngredients().get(1).getIngredientType();
         Collection<Recipe> expected = Collections.singleton(recipeToGet);
         doReturn(expected).when(database).getByIngredientType(ingredientType);
 
