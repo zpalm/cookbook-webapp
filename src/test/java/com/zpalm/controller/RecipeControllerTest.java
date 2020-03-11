@@ -265,7 +265,7 @@ class RecipeControllerTest {
     @Test
     void shouldGetRecipesByIngredientType() throws Exception {
         Recipe recipe = RecipeGenerator.getRandomRecipe();
-        String ingredientType = recipe.getIngredients().get(1).getIngredientType().getType();
+        String ingredientType = recipe.getIngredients().get(1).getIngredientType();
         Collection<Recipe> receivedRecipes = Collections.singleton(recipe);
         doReturn(receivedRecipes).when(service).getRecipesByIngredientType(ingredientType);
 

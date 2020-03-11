@@ -11,7 +11,7 @@ import lombok.Data;
 @JsonDeserialize(builder = Ingredient.IngredientBuilder.class)
 public class Ingredient {
 
-    private IngredientType ingredientType;
+    private String ingredientType;
     private Unit unit;
     private BigDecimal quantity;
 

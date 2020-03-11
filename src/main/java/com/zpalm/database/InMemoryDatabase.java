@@ -90,7 +90,7 @@ public class InMemoryDatabase implements Database {
             .stream()
             .filter(recipe -> recipe.getIngredients()
                 .stream()
-                .anyMatch(i -> i.getIngredientType().getType().toLowerCase().contains(type.toLowerCase())))
+                .anyMatch(i -> i.getIngredientType().toLowerCase().contains(type.toLowerCase())))
             .collect(Collectors.toList());
     }
 
