@@ -66,6 +66,7 @@ class AddRecipe extends React.Component{
             step: '',
             steps: [{step: ''}],
         };
+        this.baseState = this.state;
     }
 
     componentDidMount(){
@@ -88,16 +89,7 @@ class AddRecipe extends React.Component{
     }
 
     handleClose(event) {
-        event.preventDefault();
-        this.setState({
-            name: '',
-            ingredientType: '',
-            unit: '',
-            quantity: '',
-            ingredients: [{ingredientType: '',  unit: '', quantity: ''}],
-            step: '',
-            steps: [{step: ''}],
-        });
+        this.setState(this.baseState);
     }
 
     handleNameChange(event) {
