@@ -30,12 +30,14 @@ class App extends React.Component {
             name: recipe.name,
             steps: recipe.steps,
             ingredients: recipe.ingredients})
-        .then(res=>{
+        .then(response => {
             client({method: 'GET', path: '/recipes'}).done(response => {
                 this.updateRecipes(response.entity);
             });
-             $.notify("Recipe added", "success");
-        })
+            $.notify("Recipe added", "success");
+        }).catch(function (error) {
+            $.notify("An error occurred", "error");
+        });
     }
 
 	render() {
@@ -230,7 +232,31 @@ class AddRecipe extends React.Component{
     }
 }
 
+class DeleteRecipeButton extends React.Component{
+
+    deleteRecipe(id) {
+        axios.delete('/recipes/' + id, {
+        }).then(response => {
+            client({method: 'GET', path: '/recipes'}).done(response => {
+                this.props.update(response.entity);
+            });
+            $.notify("Recipe deleted.", "success");
+        }).catch(function (error) {
+            $.notify("An error occurred", "error");
+        });
+    }
+
+    render() {
+        return (
+            <button type="button" class="btn btn-danger" onClick={() => { if (window.confirm('Are you sure you wish to delete this recipe?')) this.deleteRecipe(this.props.recipeId)}}>
+                Delete
+            </button>
+        )
+    }
+}
+
 class ShowDetailsButton extends React.Component{
+
     showIngredientsList() {
         let ingredientsList = [];
         var ingredients = this.props.recipe.ingredients;
@@ -246,18 +272,18 @@ class ShowDetailsButton extends React.Component{
     }
 
     showRecipeSteps() {
-            let recipeSteps = [];
-            var steps = this.props.recipe.steps;
-            for (var i = 0; i < steps.length; i++) {
-                var step = steps[i];
-                recipeSteps.push(
-                    <li class="list-group-item">
-                        <b>{i + 1}</b>. {step.step}
-                    </li>
-                );
-            }
-            return recipeSteps;
+        let recipeSteps = [];
+        var steps = this.props.recipe.steps;
+        for (var i = 0; i < steps.length; i++) {
+            var step = steps[i];
+            recipeSteps.push(
+                <li class="list-group-item">
+                    <b>{i + 1}</b>. {step.step}
+                </li>
+            );
         }
+        return recipeSteps;
+    }
 
     render() {
         return (
@@ -302,6 +328,7 @@ class ShowDetailsButton extends React.Component{
 }
 
 class RecipeList extends React.Component{
+
 	render() {
 		const recipes = this.props.recipes.map(r =>
 			<Recipe key={r.id} recipe={r} update={this.props.update}/>
@@ -325,11 +352,16 @@ class RecipeList extends React.Component{
 }
 
 class Recipe extends React.Component{
+
 	render() {
 		return (
 			<tr>
 				<td>{this.props.recipe.name}</td>
-				<td><ShowDetailsButton recipe={this.props.recipe} /></td>
+				<td>
+				<ShowDetailsButton recipe={this.props.recipe} />
+				{' '}
+				<DeleteRecipeButton recipeId={this.props.recipe.id} update={this.props.update}/>
+				</td>
 			</tr>
 		)
 	}
