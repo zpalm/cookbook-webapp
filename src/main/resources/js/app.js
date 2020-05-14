@@ -45,6 +45,7 @@ class App extends React.Component {
 	        <div class="container-fluid">
 	            <div class="row">
 	                <AddRecipe addRecipe={this.addRecipe} update={this.updateRecipes}/>
+	                <SearchBar update={this.updateRecipes}/>
 	            </div>
 	            <div class="row">
 	                <RecipeList recipes={this.state.recipes} update={this.updateRecipes}/>
@@ -52,6 +53,63 @@ class App extends React.Component {
 	        </div>
 	    )
 	}
+}
+
+class SearchBar extends React.Component{
+
+    constructor(props){
+        super(props);
+        this.state = {
+            searchType: '',
+            searchInput: '',
+        };
+    }
+
+    componentDidMount(){
+        var input = document.getElementById("searchInput");
+        input.addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                document.getElementById("searchButton").click();
+            }
+        });
+    }
+
+    handleChange(event) {
+        this.setState({[event.target.name]: event.target.value});
+    }
+
+    search(searchInput, searchType) {
+        axios.get('/recipes/' + searchType + searchInput, {
+            })
+            .then(response => {
+                this.props.update(response.data);
+                $.notify("Recipes found", "success");
+            }).catch(function (error) {
+                $.notify("An error occurred", "error");
+        });
+    }
+
+
+    render() {
+        return (
+            <React.Fragment>
+                <div className="col-auto">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="searchInput" name="searchInput" aria-label="text input" onChange={event => this.handleChange(event)}/>
+                        <select class="form-control" name="searchType" onChange={event => this.handleChange(event)}>
+                            <option selected disabled hidden>search by</option>
+                            <option value="byName?name=">title</option>
+                            <option value="byIngredientType?type=">ingredient</option>
+                        </select>
+                        <div class="input-group-append">
+                            <button type="button" id="searchButton" class="btn btn-outline-secondary" onClick={event => this.search(this.state.searchInput, this.state.searchType)}>Search</button>
+                        </div>
+                    </div>
+                </div>
+            </React.Fragment>
+        )
+    }
 }
 
 class AddRecipe extends React.Component{
@@ -222,7 +280,7 @@ class AddRecipe extends React.Component{
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-auto">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target={"#addRecipeModal"}>
                         Add recipe
                     </button>

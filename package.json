@@ -22,6 +22,9 @@
   "dependencies": {
     "autosize": "^4.0.2",
     "axios": "^0.18.1",
+    "bootstrap": "^4.4.1",
+    "jquery": "^3.5.1",
+    "popper.js": "^1.16.1",
     "react": "^16.5.2",
     "react-autosize-textarea": "^7.0.0",
     "react-dom": "^16.5.2",
