@@ -134,12 +134,12 @@ public class HibernateDatabaseTest {
         String ingredientType = recipeToGet.getIngredients().get(1).getIngredientType();
         List<com.zpalm.database.sqlmodel.Recipe> sqlRecipes = List.of(sqlRecipe);
         List<Recipe> expected = sqlModelMapper.mapToRecipes(sqlRecipes);
-        doReturn(sqlRecipes).when(recipeRepository).findByIngredientsIngredientTypeIgnoreCase(ingredientType);
+        doReturn(sqlRecipes).when(recipeRepository).findByIngredientsIngredientTypeContainingIgnoreCase(ingredientType);
 
         Collection<Recipe> receivedRecipes = hibernateDatabase.getByIngredientType(ingredientType);
 
         assertIterableEquals(expected, receivedRecipes);
-        verify(recipeRepository).findByIngredientsIngredientTypeIgnoreCase(ingredientType);
+        verify(recipeRepository).findByIngredientsIngredientTypeContainingIgnoreCase(ingredientType);
     }
 
     @Test
